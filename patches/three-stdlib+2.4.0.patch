@@ -1,0 +1,24 @@
+diff --git a/node_modules/three-stdlib/controls/FlyControls.js b/node_modules/three-stdlib/controls/FlyControls.js
+index 209c84f..7fe6375 100644
+--- a/node_modules/three-stdlib/controls/FlyControls.js
++++ b/node_modules/three-stdlib/controls/FlyControls.js
+@@ -236,8 +236,9 @@ class FlyControls extends EventDispatcher {
+       this.object.translateX(this.moveVector.x * moveMult);
+       this.object.translateY(this.moveVector.y * moveMult);
+       this.object.translateZ(this.moveVector.z * moveMult);
+-      this.tmpQuaternion.set(this.rotationVector.x * rotMult, this.rotationVector.y * rotMult, this.rotationVector.z * rotMult, 1).normalize();
++      this.tmpQuaternion.set(this.rotationVector.x * rotMult, this.rotationVector.y * rotMult, 0, 1).normalize();
+       this.object.quaternion.multiply(this.tmpQuaternion);
++	  this.object.quaternion.set(this.object.quaternion.x, this.object.quaternion.y, 0, this.object.quaternion.w);
+ 
+       if (this.lastPosition.distanceToSquared(this.object.position) > this.EPS || 8 * (1 - this.lastQuaternion.dot(this.object.quaternion)) > this.EPS) {
+         this.dispatchEvent(this.changeEvent);
+@@ -256,7 +257,7 @@ class FlyControls extends EventDispatcher {
+     _defineProperty(this, "updateRotationVector", () => {
+       this.rotationVector.x = -this.moveState.pitchDown + this.moveState.pitchUp;
+       this.rotationVector.y = -this.moveState.yawRight + this.moveState.yawLeft;
+-      this.rotationVector.z = -this.moveState.rollRight + this.moveState.rollLeft;
++      //this.rotationVector.z = -this.moveState.rollRight + this.moveState.rollLeft;
+     });
+ 
+     _defineProperty(this, "getContainerDimensions", () => {

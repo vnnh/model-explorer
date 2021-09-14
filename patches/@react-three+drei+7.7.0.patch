@@ -1,0 +1,33 @@
+diff --git a/node_modules/@react-three/drei/web/Html.js b/node_modules/@react-three/drei/web/Html.js
+index 384a807..ffee903 100644
+--- a/node_modules/@react-three/drei/web/Html.js
++++ b/node_modules/@react-three/drei/web/Html.js
+@@ -2,27 +2,12 @@ import _extends from '@babel/runtime/helpers/esm/extends';
+ import * as React from 'react';
+ import { Vector3, OrthographicCamera, PerspectiveCamera } from 'three';
+ import { useThree, useFrame } from '@react-three/fiber';
++import ReactDOM from "react-dom";
+ 
+ const v1 = new Vector3();
+ const v2 = new Vector3();
+ const v3 = new Vector3();
+ 
+-const noReactDomError = () => {
+-  throw new Error(`Html component requires a 'react-dom' package, please install it`);
+-};
+-
+-let ReactDOM = {
+-  unmountComponentAtNode: noReactDomError,
+-  render: noReactDomError
+-}; // workaround to not to break apps that doesn't have react-dom,
+-// don't use Html component and import from the root
+-// e.g. `import { OrbitControls } from '@react-three/drei'`
+-
+-try {
+-  ReactDOM = require('react-dom');
+-} catch {// react-dom isn't installed
+-}
+-
+ function defaultCalculatePosition(el, camera, size) {
+   const objectPos = v1.setFromMatrixPosition(el.matrixWorld);
+   objectPos.project(camera);
