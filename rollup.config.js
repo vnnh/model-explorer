@@ -5,6 +5,7 @@ import livereload from "rollup-plugin-livereload";
 import css from "rollup-plugin-css-only";
 import replace from "rollup-plugin-replace";
 import { terser } from "rollup-plugin-terser";
+import analyze from "rollup-plugin-analyzer";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -32,7 +33,7 @@ function serve() {
 export default {
 	input: "src/main.tsx",
 	output: {
-		sourcemap: true,
+		sourcemap: !production,
 		format: "iife",
 		name: "app",
 		file: "public/build/bundle.js",
@@ -48,6 +49,7 @@ export default {
 		!production && serve(),
 		!production && livereload(),
 		production && terser(),
+		analyze({ summaryOnly: true }),
 	],
 	watch: {
 		clearScreen: false,
