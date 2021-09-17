@@ -1,0 +1,6 @@
+.directory-selector-container {
+	display: flex;
+	flex-direction: row;
+
+	color: var(--grey-100);
+}

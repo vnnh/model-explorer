@@ -1,15 +1,15 @@
 {
 	"compilerOptions": {
 		"baseUrl": ".",
-		"outDir": "public/build/ts",
 		"module": "esnext",
-		"target": "es5",
-		"lib": ["es6", "dom"],
-		"sourceMap": true,
+		"target": "esnext",
+		"lib": ["esnext", "dom"],
+		"sourceMap": false,
 		"allowJs": true,
 		"jsx": "react",
 		"moduleResolution": "node",
 		"rootDir": "src",
+		"noEmit": true,
 		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
 		"noImplicitReturns": true,
@@ -18,16 +18,9 @@
 		"importHelpers": true,
 		"strictNullChecks": true,
 		"suppressImplicitAnyIndexErrors": true,
-		"noUnusedLocals": true
+		"skipLibCheck": true,
+		"types": ["snowpack-env"]
 	},
 	"include": ["src/**/*"],
-	"exclude": [
-		"node_modules",
-		"build",
-		"scripts",
-		"acceptance-tests",
-		"webpack",
-		"jest",
-		"src/setupTests.ts"
-	]
+	"exclude": ["node_modules", "build", "scripts", "acceptance-tests", "webpack", "jest", "src/setupTests.ts"]
 }

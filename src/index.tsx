@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import ReactDOM from "react-dom";
-import { Environment, FlyControls, Html, useGLTF, useProgress } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+//import { Environment, FlyControls, Html, useGLTF, useProgress } from "@react-three/drei";
+//import { Canvas } from "@react-three/fiber";
 import React, { Suspense } from "react";
 import Topbar from "./components/Topbar";
+import DirectorySelector from "./components/input/DirectorySelector";
+import "./root.css";
 
-const Scene = () => {
-	//const gltf = useGLTF("/scene.gltf");
-	//<primitive object={gltf.scene.children[0]} />
+/**const Scene = () => {
+	const gltf = useGLTF("/scene.gltf");
 
 	return (
 		<>
+			<primitive object={gltf.scene.children[0]} />
 			<FlyControls movementSpeed={5} rollSpeed={Math.PI / 3} autoForward={false} dragToLook={true} />
 			<ambientLight intensity={0.5}></ambientLight>
 			<Environment preset={"forest"} background />
@@ -23,15 +26,18 @@ const Loader = () => {
 	return <Html center>{progress} % loaded</Html>;
 };
 
-ReactDOM.render(
-	<>
-		<Topbar />
-		<div className={`fullscreen-model-view`}>
-			<Canvas frameloop={"always"}>
+<Canvas frameloop={"always"}>
 				<Suspense fallback={<Loader />}>
 					<Scene />
 				</Suspense>
 			</Canvas>
+*/
+ReactDOM.render(
+	<>
+		<Topbar />
+		<DirectorySelector />
+		<div className={`fullscreen-model-view`} style={{ color: "#FFFFFF" }}>
+			hey
 		</div>
 	</>,
 	document.getElementById("root"),

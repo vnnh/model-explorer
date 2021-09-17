@@ -6,70 +6,7 @@ body {
 	padding: 0%;
 	margin: 0%;
 
-	background-color: var(--neutral-900);
-}
-
-.title-div {
-	width: 100%;
-	height: 2rem;
-	background-color: var(--neutral-1000);
-}
-
-.fullscreen-model-view {
-	width: 100%;
-	height: calc(100% - 2rem);
-}
-
-.title-image {
-	position: absolute;
-
-	width: auto;
-	height: 2rem;
-
-	top: 0;
-	left: 0;
-}
-
-.right-title-container {
-	width: 100%;
-	height: 100%;
-
-	display: flex;
-	flex-shrink: 0;
-	flex-direction: row-reverse;
-	justify-content: flex-start;
-	align-items: center;
-}
-
-body {
-	--neutral-100: #f6f7f9;
-	--neutral-200: #e6e7ea;
-	--neutral-300: #ced2d6;
-	--neutral-400: #9ea5ad;
-	--neutral-500: #7f8790;
-	--neutral-600: #676e76;
-	--neutral-700: #596066;
-	--neutral-800: #454c52;
-	--neutral-900: #383f4f;
-	--neutral-1000: #24292e;
-
-	--grey-50: #f5f7fa;
-	--grey-100: #e4e7eb;
-	--grey-200: #cbd2d9;
-	--grey-300: #9aa5b1;
-	--grey-400: #7b8794;
-	--grey-500: #616e7c;
-	--grey-600: #52606d;
-	--grey-700: #3e4c59;
-	--grey-800: #323f4b;
-	--grey-900: #1f2933;
-
-	--primary: #303f9f;
-	--secondary: #bdbdbd;
-	--confirm: #00897b;
-	--warning: #f79b19;
-	--error: #c62828;
-	--help: #673ab7;
+	background-color: var(--grey-900);
 }
 
 .root {

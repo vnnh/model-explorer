@@ -1,5 +1,6 @@
 import { appWindow } from "@tauri-apps/api/window";
 import React from "react";
+import "../root.css";
 
 const Topbar = (): JSX.Element => {
 	return (
