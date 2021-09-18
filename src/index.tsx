@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import ReactDOM from "react-dom";
-//import { Environment, FlyControls, Html, useGLTF, useProgress } from "@react-three/drei";
-//import { Canvas } from "@react-three/fiber";
+import { Environment, FlyControls, Html, useGLTF, useProgress } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import React, { Suspense } from "react";
 import Topbar from "./components/Topbar";
 import DirectorySelector from "./components/input/DirectorySelector";
 import "./root.css";
 
-/**const Scene = () => {
+const Scene = () => {
 	const gltf = useGLTF("/scene.gltf");
 
 	return (
@@ -26,18 +26,16 @@ const Loader = () => {
 	return <Html center>{progress} % loaded</Html>;
 };
 
-<Canvas frameloop={"always"}>
-				<Suspense fallback={<Loader />}>
-					<Scene />
-				</Suspense>
-			</Canvas>
-*/
 ReactDOM.render(
 	<>
 		<Topbar />
 		<DirectorySelector />
 		<div className={`fullscreen-model-view`} style={{ color: "#FFFFFF" }}>
-			hey
+			<Canvas frameloop={"always"}>
+				<Suspense fallback={<Loader />}>
+					<Scene />
+				</Suspense>
+			</Canvas>
 		</div>
 	</>,
 	document.getElementById("root"),

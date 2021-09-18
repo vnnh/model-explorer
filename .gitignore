@@ -1,4 +1,8 @@
 node_modules
 out
-public/build
+__pycache__
 .env
+.DS_Store
+dist
+dist-ssr
+*.local

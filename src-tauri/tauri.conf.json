@@ -6,8 +6,8 @@
 	"build": {
 		"distDir": "../out",
 		"devPath": "http://localhost:8081",
-		"beforeDevCommand": "npm run snowpack-dev",
-		"beforeBuildCommand": "npm run snowpack-build"
+		"beforeDevCommand": "npm run web-dev",
+		"beforeBuildCommand": "npm run web-build"
 	},
 	"tauri": {
 		"bundle": {
