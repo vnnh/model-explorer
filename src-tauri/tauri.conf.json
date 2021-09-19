@@ -51,6 +51,7 @@
 		"allowlist": {
 			"fs": {
 				"readDir": true,
+				"readBinaryFile": true,
 				"removeFile": true,
 				"renameFile": true
 			},

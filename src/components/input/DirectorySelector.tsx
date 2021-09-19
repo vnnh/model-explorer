@@ -1,12 +1,12 @@
 import { dialog } from "@tauri-apps/api";
-import React, { useState } from "react";
-import "./input.css";
+import React from "react";
 
-const DirectorySelector = (): React.ReactElement => {
-	const [directoryPath, setDirectoryPath] = useState("");
-
+const DirectorySelector = (props: {
+	value: string;
+	onUpdated: (directoryPath: string) => void;
+}): React.ReactElement => {
 	return (
-		<div className={`directory-selector-container`}>
+		<div className={`flex flex-row text-gray-100`}>
 			<button
 				onClick={() => {
 					dialog.open({ multiple: false, directory: true }).then((value) => {
@@ -14,13 +14,13 @@ const DirectorySelector = (): React.ReactElement => {
 							return;
 						}
 
-						setDirectoryPath(typeof value === "string" ? value : value[0]);
+						props.onUpdated(typeof value === "string" ? value : value[0]);
 					});
 				}}
 			>
 				choose file
 			</button>
-			{directoryPath}
+			{props.value}
 		</div>
 	);
 };
