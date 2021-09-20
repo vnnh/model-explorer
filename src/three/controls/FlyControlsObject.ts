@@ -118,7 +118,7 @@ class FlyControls extends EventDispatcher {
 		//forward -,back +
 
 		event.preventDefault();
-		this.object.translateZ(Math.sign(event.deltaY) * this.movementSpeed);
+		this.object.translateZ(Math.sign(event.deltaY) * 0.3 * this.movementSpeed);
 	};
 
 	private keydown = (event: KeyboardEvent): void => {
