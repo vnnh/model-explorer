@@ -1,12 +1,17 @@
 import { Camera, EventDispatcher, Quaternion, Vector3 } from "three";
 
+const twoPI = Math.PI * 2;
+const halfPI = Math.PI / 2;
+
 function contextmenu(event: Event): void {
 	event.preventDefault();
 }
 
+const moduloWrapAround = (offset: number, capacity: number) => ((offset % capacity) + capacity) % capacity;
+
 class FlyControls extends EventDispatcher {
 	public object: Camera;
-	public domElement: HTMLElement | Document;
+	public domElement: HTMLCanvasElement;
 
 	public movementSpeed = 1.0;
 	public rollSpeed = 0.005;
@@ -17,7 +22,17 @@ class FlyControls extends EventDispatcher {
 	private changeEvent = { type: "change" };
 	private EPS = 0.000001;
 
-	private tmpQuaternion = new Quaternion();
+	private theta = 0;
+	private phi = 0;
+	private dTheta = 0;
+	private dPhi = 0;
+
+	//vertical orbit
+	minPolarAngle = -halfPI;
+	maxPolarAngle = halfPI;
+	//horizontal orbit
+	minAzimuthAngle = -Infinity;
+	maxAzimuthAngle = Infinity;
 
 	private mouseStatus = 0;
 
@@ -34,19 +49,11 @@ class FlyControls extends EventDispatcher {
 		pitchDown: 0,
 		yawLeft: 0,
 		yawRight: 0,
-		rollLeft: 0,
-		rollRight: 0,
 	};
 	private moveVector = new Vector3(0, 0, 0);
-	private rotationVector = new Vector3(0, 0, 0);
 
-	constructor(object: Camera, domElement: HTMLElement | Document) {
+	constructor(object: Camera, domElement: HTMLCanvasElement) {
 		super();
-
-		if (domElement === undefined) {
-			console.warn('THREE.FlyControls: The second parameter "domElement" is now mandatory.');
-			domElement = document;
-		}
 
 		this.object = object;
 		this.domElement = domElement;
@@ -68,6 +75,46 @@ class FlyControls extends EventDispatcher {
 		this.updateMovementVector();
 		this.updateRotationVector();
 	}
+
+	public getPolarAngle = () => this.phi;
+	public getAzimuthalAngle = () => this.theta;
+	public setPolarAngle = (value: number) => {
+		// use modulo wrapping to safeguard value
+		let phi = moduloWrapAround(value, 2 * Math.PI);
+		let currentPhi = this.phi;
+
+		// convert to the equivalent shortest angle
+		if (currentPhi < 0) currentPhi += 2 * Math.PI;
+		if (phi < 0) phi += 2 * Math.PI;
+		let phiDist = Math.abs(phi - currentPhi);
+		if (2 * Math.PI - phiDist < phiDist) {
+			if (phi < currentPhi) {
+				phi += 2 * Math.PI;
+			} else {
+				currentPhi += 2 * Math.PI;
+			}
+		}
+		this.dPhi = phi - currentPhi;
+		this.update(0);
+	};
+	public setAzimuthalAngle = (value: number) => {
+		let theta = moduloWrapAround(value, 2 * Math.PI);
+		let currentTheta = this.theta;
+
+		// convert to the equivalent shortest angle
+		if (currentTheta < 0) currentTheta += 2 * Math.PI;
+		if (theta < 0) theta += 2 * Math.PI;
+		let thetaDist = Math.abs(theta - currentTheta);
+		if (2 * Math.PI - thetaDist < thetaDist) {
+			if (theta < currentTheta) {
+				theta += 2 * Math.PI;
+			} else {
+				currentTheta += 2 * Math.PI;
+			}
+		}
+		this.dTheta = theta - currentTheta;
+		this.update(0);
+	};
 
 	private wheel = (event: WheelEvent): void => {
 		//forward -,back +
@@ -101,13 +148,6 @@ class FlyControls extends EventDispatcher {
 				this.moveState.right = 1;
 				break;
 
-			case "KeyR":
-				this.moveState.up = 1;
-				break;
-			case "KeyF":
-				this.moveState.down = 1;
-				break;
-
 			case "ArrowUp":
 				this.moveState.pitchUp = 1;
 				break;
@@ -123,10 +163,10 @@ class FlyControls extends EventDispatcher {
 				break;
 
 			case "KeyQ":
-				this.moveState.rollLeft = 1;
+				this.moveState.down = 1;
 				break;
 			case "KeyE":
-				this.moveState.rollRight = 1;
+				this.moveState.up = 1;
 				break;
 		}
 
@@ -155,13 +195,6 @@ class FlyControls extends EventDispatcher {
 				this.moveState.right = 0;
 				break;
 
-			case "KeyR":
-				this.moveState.up = 0;
-				break;
-			case "KeyF":
-				this.moveState.down = 0;
-				break;
-
 			case "ArrowUp":
 				this.moveState.pitchUp = 0;
 				break;
@@ -177,10 +210,10 @@ class FlyControls extends EventDispatcher {
 				break;
 
 			case "KeyQ":
-				this.moveState.rollLeft = 0;
+				this.moveState.down = 0;
 				break;
 			case "KeyE":
-				this.moveState.rollRight = 0;
+				this.moveState.up = 0;
 				break;
 		}
 
@@ -243,17 +276,38 @@ class FlyControls extends EventDispatcher {
 	private lastPosition = new Vector3();
 
 	public update = (delta: number): void => {
+		this.theta += this.dTheta;
+		this.phi += this.dPhi;
+
+		let min = this.minAzimuthAngle;
+		let max = this.maxAzimuthAngle;
+		if (isFinite(min) && isFinite(max)) {
+			if (min < -Math.PI) min += twoPI;
+			else if (min > Math.PI) min -= twoPI;
+
+			if (max < -Math.PI) max += twoPI;
+			else if (max > Math.PI) max -= twoPI;
+
+			if (min <= max) {
+				this.theta = Math.max(min, Math.min(max, this.theta));
+			} else {
+				this.theta = this.theta > (min + max) / 2 ? Math.max(min, this.theta) : Math.min(max, this.theta);
+			}
+		}
+
+		this.phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, this.phi));
+		this.phi = (this.phi + twoPI) % twoPI;
+		if (this.phi > halfPI) {
+			this.phi -= twoPI;
+		}
+
 		const moveMult = delta * this.movementSpeed;
-		const rotMult = delta * this.rollSpeed;
 
 		this.object.translateX(this.moveVector.x * moveMult);
 		this.object.translateY(this.moveVector.y * moveMult);
 		this.object.translateZ(this.moveVector.z * moveMult);
 
-		this.tmpQuaternion
-			.set(this.rotationVector.x * rotMult, this.rotationVector.y * rotMult, this.rotationVector.z * rotMult, 1)
-			.normalize();
-		this.object.quaternion.multiply(this.tmpQuaternion);
+		this.object.rotation.set(this.phi, this.theta, 0, "ZYX");
 
 		if (
 			this.lastPosition.distanceToSquared(this.object.position) > this.EPS ||
@@ -274,9 +328,11 @@ class FlyControls extends EventDispatcher {
 	};
 
 	private updateRotationVector = (): void => {
-		this.rotationVector.x = -this.moveState.pitchDown + this.moveState.pitchUp;
-		this.rotationVector.y = -this.moveState.yawRight + this.moveState.yawLeft;
-		this.rotationVector.z = -this.moveState.rollRight + this.moveState.rollLeft;
+		const x = -this.moveState.pitchDown + this.moveState.pitchUp;
+		const y = -this.moveState.yawRight + this.moveState.yawLeft;
+
+		this.dTheta = ((twoPI * y) / this.domElement.clientHeight) * this.rollSpeed;
+		this.dPhi = ((twoPI * x) / this.domElement.clientHeight) * this.rollSpeed;
 	};
 
 	private getContainerDimensions = (): {
