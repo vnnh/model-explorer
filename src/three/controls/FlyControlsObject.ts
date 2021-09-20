@@ -221,21 +221,23 @@ class FlyControls extends EventDispatcher {
 
 	private isMouseDown = false;
 	private mousedown = (event: MouseEvent): void => {
-		this.isMouseDown = true;
+		if (event.button === 2) {
+			this.isMouseDown = true;
 
-		if (this.dragToLook) {
-			this.domElement.requestPointerLock();
-		} else {
-			switch (event.button) {
-				case 0:
-					this.moveState.forward = 1;
-					break;
-				case 2:
-					this.moveState.back = 1;
-					break;
+			if (this.dragToLook) {
+				this.domElement.requestPointerLock();
+			} else {
+				/**switch (event.button) {
+					case 0:
+						this.moveState.forward = 1;
+						break;
+					case 2:
+						this.moveState.back = 1;
+						break;
+				}
+
+				this.updateMovementVector();*/
 			}
-
-			this.updateMovementVector();
 		}
 	};
 
@@ -249,25 +251,27 @@ class FlyControls extends EventDispatcher {
 	};
 
 	private mouseup = (event: MouseEvent): void => {
-		this.isMouseDown = false;
+		if (event.button === 2) {
+			this.isMouseDown = false;
 
-		if (this.dragToLook) {
-			this.moveState.yawLeft = this.moveState.pitchDown = 0;
-			document.exitPointerLock();
-		} else {
-			switch (event.button) {
-				case 0:
-					this.moveState.forward = 0;
-					break;
-				case 2:
-					this.moveState.back = 0;
-					break;
+			if (this.dragToLook) {
+				this.moveState.yawLeft = this.moveState.pitchDown = 0;
+				document.exitPointerLock();
+			} else {
+				/**switch (event.button) {
+					case 0:
+						this.moveState.forward = 0;
+						break;
+					case 2:
+						this.moveState.back = 0;
+						break;
+				}
+
+				this.updateMovementVector();*/
 			}
 
-			this.updateMovementVector();
+			this.updateRotationVector();
 		}
-
-		this.updateRotationVector();
 	};
 
 	private lastQuaternion = new Quaternion();
