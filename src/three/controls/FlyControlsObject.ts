@@ -1,7 +1,13 @@
-import { Camera, EventDispatcher, Quaternion, Vector3 } from "three";
+import { EventDispatcher, PerspectiveCamera, Quaternion, Vector3 } from "three";
 
 const twoPI = Math.PI * 2;
 const halfPI = Math.PI / 2;
+
+const enum MOUSE_INTERACTION_TYPE {
+	NONE = 0,
+	ROTATE,
+	PAN,
+}
 
 function contextmenu(event: Event): void {
 	event.preventDefault();
@@ -10,7 +16,7 @@ function contextmenu(event: Event): void {
 const moduloWrapAround = (offset: number, capacity: number) => ((offset % capacity) + capacity) % capacity;
 
 class FlyControls extends EventDispatcher {
-	public object: Camera;
+	public object: PerspectiveCamera;
 	public domElement: HTMLCanvasElement;
 
 	public movementSpeed = 1.0;
@@ -50,7 +56,7 @@ class FlyControls extends EventDispatcher {
 	};
 	private moveVector = new Vector3(0, 0, 0);
 
-	constructor(object: Camera, domElement: HTMLCanvasElement) {
+	constructor(object: PerspectiveCamera, domElement: HTMLCanvasElement) {
 		super();
 
 		this.object = object;
@@ -220,43 +226,69 @@ class FlyControls extends EventDispatcher {
 	};
 
 	private isMouseDown = false;
+	private mouseInteractionType = MOUSE_INTERACTION_TYPE.NONE;
 	private mousedown = (event: MouseEvent): void => {
 		if (event.button === 2) {
 			this.isMouseDown = true;
 
-			if (this.dragToLook) {
+			if (event.shiftKey || event.ctrlKey) {
+				this.mouseInteractionType = MOUSE_INTERACTION_TYPE.PAN;
 				this.domElement.requestPointerLock();
 			} else {
-				/**switch (event.button) {
-					case 0:
-						this.moveState.forward = 1;
-						break;
-					case 2:
-						this.moveState.back = 1;
-						break;
-				}
+				this.mouseInteractionType = MOUSE_INTERACTION_TYPE.ROTATE;
 
-				this.updateMovementVector();*/
+				if (this.dragToLook) {
+					this.domElement.requestPointerLock();
+				} else {
+					/**switch (event.button) {
+						case 0:
+							this.moveState.forward = 1;
+							break;
+						case 2:
+							this.moveState.back = 1;
+							break;
+					}
+	
+					this.updateMovementVector();*/
+				}
 			}
 		}
 	};
 
+	private vLeft = new Vector3();
+	private vUp = new Vector3();
 	private mousemove = (event: MouseEvent): void => {
 		if (this.isMouseDown || !this.dragToLook) {
-			this.theta -= (twoPI * event.movementX) / this.domElement.clientHeight;
-			this.phi -= (twoPI * event.movementY) / this.domElement.clientHeight;
+			if (this.mouseInteractionType === MOUSE_INTERACTION_TYPE.ROTATE) {
+				this.theta -= (twoPI * event.movementX) / this.domElement.clientHeight;
+				this.phi -= (twoPI * event.movementY) / this.domElement.clientHeight;
 
-			this.updateRotationVector();
+				this.updateRotationVector();
+			} else if (this.mouseInteractionType === MOUSE_INTERACTION_TYPE.PAN) {
+				const targetDistance = this.movementSpeed;
+
+				const leftDistance = (2 * event.movementX * targetDistance) / this.domElement.clientHeight;
+				const upDistance = (2 * event.movementY * targetDistance) / this.domElement.clientHeight;
+
+				this.vLeft.setFromMatrixColumn(this.object.matrix, 0);
+				this.vLeft.multiplyScalar(-leftDistance);
+
+				this.vUp.setFromMatrixColumn(this.object.matrix, 1);
+				this.vUp.multiplyScalar(upDistance);
+
+				this.object.position.add(this.vLeft).add(this.vUp);
+			}
 		}
 	};
 
 	private mouseup = (event: MouseEvent): void => {
 		if (event.button === 2) {
+			this.mouseInteractionType = MOUSE_INTERACTION_TYPE.NONE;
 			this.isMouseDown = false;
+			document.exitPointerLock();
 
 			if (this.dragToLook) {
 				this.moveState.yawLeft = this.moveState.pitchDown = 0;
-				document.exitPointerLock();
 			} else {
 				/**switch (event.button) {
 					case 0:

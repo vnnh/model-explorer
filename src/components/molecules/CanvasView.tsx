@@ -28,8 +28,6 @@ const FBXScene: React.FunctionComponent<{ filePath: string }> = (props) => {
 		path: props.filePath,
 	});
 	fbx.name = props.filePath;
-	fbx.castShadow = true;
-	fbx.receiveShadow = true;
 
 	const previousFilePath = usePrevious(props.filePath);
 	useEffect(() => {
@@ -51,7 +49,7 @@ const FBXScene: React.FunctionComponent<{ filePath: string }> = (props) => {
 
 	return (
 		<>
-			<TransformControls enabled>
+			<TransformControls key={fbx.name} enabled isTransformControls>
 				<primitive key={fbx.name} object={fbx} />
 			</TransformControls>
 		</>
