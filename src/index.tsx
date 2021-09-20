@@ -5,6 +5,7 @@ import { FSContext, FSProvider } from "./context/fs";
 import NavigationBar from "./components/molecules/NavigationBar";
 import { LayoutContext, LayoutProvider } from "./context/layout";
 import CanvasView from "./components/molecules/CanvasView";
+import { Leva } from "leva";
 
 const Root = () => {
 	const { navSize } = useContext(LayoutContext);
@@ -22,6 +23,7 @@ const Root = () => {
 					<CanvasView filePath={selectedFilePath} />
 				</div>
 			</div>
+			<Leva />
 		</>
 	);
 };
