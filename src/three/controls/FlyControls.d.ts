@@ -33,7 +33,7 @@ export declare const FlyControls: React.ForwardRefExoticComponent<
 		| "update"
 		| "domElement"
 		| "movementSpeed"
-		| "rollSpeed"
+		| "rotateSpeed"
 		| "dragToLook"
 		| "autoForward"
 	> &

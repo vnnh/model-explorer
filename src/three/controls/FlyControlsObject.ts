@@ -14,7 +14,7 @@ class FlyControls extends EventDispatcher {
 	public domElement: HTMLCanvasElement;
 
 	public movementSpeed = 1.0;
-	public rollSpeed = 0.005;
+	public rotateSpeed = 0.005;
 
 	public dragToLook = true;
 	public autoForward = false;
@@ -33,8 +33,6 @@ class FlyControls extends EventDispatcher {
 	//horizontal orbit
 	minAzimuthAngle = -Infinity;
 	maxAzimuthAngle = Infinity;
-
-	private mouseStatus = 0;
 
 	private movementSpeedMultiplier = 1;
 
@@ -221,9 +219,12 @@ class FlyControls extends EventDispatcher {
 		this.updateRotationVector();
 	};
 
+	private isMouseDown = false;
 	private mousedown = (event: MouseEvent): void => {
+		this.isMouseDown = true;
+
 		if (this.dragToLook) {
-			this.mouseStatus = 1;
+			this.domElement.requestPointerLock();
 		} else {
 			switch (event.button) {
 				case 0:
@@ -239,23 +240,20 @@ class FlyControls extends EventDispatcher {
 	};
 
 	private mousemove = (event: MouseEvent): void => {
-		if (!this.dragToLook || this.mouseStatus > 0) {
-			const container = this.getContainerDimensions();
-			const halfWidth = container.size[0] / 2;
-			const halfHeight = container.size[1] / 2;
-
-			this.moveState.yawLeft = -(event.pageX - container.offset[0] - halfWidth) / halfWidth;
-			this.moveState.pitchDown = (event.pageY - container.offset[1] - halfHeight) / halfHeight;
+		if (this.isMouseDown || !this.dragToLook) {
+			this.theta -= (twoPI * event.movementX) / this.domElement.clientHeight;
+			this.phi -= (twoPI * event.movementY) / this.domElement.clientHeight;
 
 			this.updateRotationVector();
 		}
 	};
 
 	private mouseup = (event: MouseEvent): void => {
-		if (this.dragToLook) {
-			this.mouseStatus = 0;
+		this.isMouseDown = false;
 
+		if (this.dragToLook) {
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;
+			document.exitPointerLock();
 		} else {
 			switch (event.button) {
 				case 0:
@@ -331,8 +329,8 @@ class FlyControls extends EventDispatcher {
 		const x = -this.moveState.pitchDown + this.moveState.pitchUp;
 		const y = -this.moveState.yawRight + this.moveState.yawLeft;
 
-		this.dTheta = ((twoPI * y) / this.domElement.clientHeight) * this.rollSpeed;
-		this.dPhi = ((twoPI * x) / this.domElement.clientHeight) * this.rollSpeed;
+		this.dTheta = ((twoPI * y) / this.domElement.clientHeight) * this.rotateSpeed;
+		this.dPhi = ((twoPI * x) / this.domElement.clientHeight) * this.rotateSpeed;
 	};
 
 	private getContainerDimensions = (): {
