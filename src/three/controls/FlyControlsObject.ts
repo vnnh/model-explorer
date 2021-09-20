@@ -299,7 +299,7 @@ class FlyControls extends EventDispatcher {
 			this.phi -= twoPI;
 		}
 
-		const moveMult = delta * this.movementSpeed;
+		const moveMult = delta * this.movementSpeed * this.movementSpeedMultiplier;
 
 		this.object.translateX(this.moveVector.x * moveMult);
 		this.object.translateY(this.moveVector.y * moveMult);
