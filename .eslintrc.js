@@ -23,11 +23,32 @@ module.exports = {
 				useTabs: true,
 			},
 		],
-		"no-empty-function": "off",
-		"@typescript-eslint/no-empty-function": 0,
-		"@typescript-eslint/no-unused-vars": 0,
-		"@typescript-eslint/explicit-module-boundary-types": 0,
-		"@typescript-eslint/no-non-null-assertion": 0,
+		"@typescript-eslint/array-type": [
+			"warn",
+			{
+				"default": "generic",
+				"readonly": "generic"
+			}
+		],
+		"no-restricted-imports": [
+			"error",
+			{
+				"patterns": [".*"]
+			}
+		],
+		"@typescript-eslint/no-unused-vars": "warn",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/interface-name-prefix": "off",
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/no-empty-interface": "Off",
+		"@typescript-eslint/no-namespace": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-use-before-define": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/no-require-imports": "error",
+		"@typescript-eslint/no-unused-expressions": "warn",
+		"no-undef-init": "error",
+		"no-console": "error",
 		"prefer-const": 0,
 		"@typescript-eslint/no-array-constructor": 0,
 	},
