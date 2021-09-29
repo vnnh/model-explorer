@@ -1,9 +1,9 @@
 import { fs } from "@tauri-apps/api";
 import React, { useContext, useEffect, useState } from "react";
-import { LayoutContext } from "../../context/layout";
-import { FSContext } from "../../context/fs";
-import ResizePanel from "../atoms/ResizePanel";
-import DirectorySelector from "../input/DirectorySelector";
+import { LayoutContext } from "src/context/layout";
+import { FSContext } from "src/context/fs";
+import ResizePanel from "src/components/atoms/ResizePanel";
+import DirectorySelector from "src/components/input/DirectorySelector";
 
 const NavigationBar: React.FunctionComponent = () => {
 	const { directoryPath, setDirectoryPath, selectedFilePath, setSelectedFilePath } = useContext(FSContext);

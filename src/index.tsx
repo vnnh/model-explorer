@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom";
 import React, { useContext } from "react";
-import Topbar from "./components/molecules/Topbar";
-import { FSContext, FSProvider } from "./context/fs";
-import NavigationBar from "./components/molecules/NavigationBar";
-import { LayoutContext, LayoutProvider } from "./context/layout";
-import CanvasView from "./components/molecules/CanvasView";
+import Topbar from "src/components/molecules/Topbar";
+import { FSContext, FSProvider } from "src/context/fs";
+import NavigationBar from "src/components/molecules/NavigationBar";
+import { LayoutContext, LayoutProvider } from "src/context/layout";
 import { Leva } from "leva";
+import CanvasView from "src/components/molecules/CanvasView";
 
 const Root = () => {
 	const { navSize } = useContext(LayoutContext);
